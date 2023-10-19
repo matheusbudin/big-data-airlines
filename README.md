@@ -13,7 +13,7 @@ Este projeto foi originado de um desafio para a empresa Eleflow, a qual disponib
 
 ```!pip install python-decouple```
 
-- seguida dos comandos: "!touch .env" para criar o arquivo .env no Colab seguido da configuração para uso desta chave: 
+- seguida dos comandos: ```!touch .env"``` para criar o arquivo .env no Colab seguido da configuração para uso desta chave: 
 
 ```
 from decouple import config
@@ -56,11 +56,65 @@ seus respectivos dados, utilizando o a metodologia de "slicing";
 
 ## Task-1
 
-Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook "VRA_tratamento.ipynb" [TODOS ESSES COLOCAR O LINK], na qual, como já foi dito anteriormente, realizamos o tratamento de snake case para as colunas e exportamos o resultado para um arquivo parquet com compressão snappy.
+Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook [VRA_tratamento.ipynb](hhttps://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/VRA_tratamento.ipynb) , na qual, como já foi dito anteriormente, realizamos o tratamento de snake case para as colunas, retiramos os caracteres especiais pois podem ocasionar problemas quando essas tabelas forem usadas em um ```JOIN``` da ```task-4``` e exportamos o resultado para um arquivo parquet com compressão snappy.
 
-COLOCAR TRECHO DO CODIGO COM TRATAMENTO SNAKE_CASE
+A seguir temos o trecho do código retirado do notebook "VRA_tratamento.ipynb" o qual é responsável por realizar o tratamento de snake_case requierido na task, lembrando que inicialmente no arquivo ```de origem``` as colunas estavam no padrão ```KebabCase``` então definimos uma função para realizar tal conversão:
 
+
+```
+# converter para snake case, usamos o regex abaixo:
+def kebab_to_snake(column_name):
+    return re.sub(r'(?<=[a-z])(?=[A-Z0-9])|(?<=[0-9])(?=[A-Z])', '_', column_name).lower()
+
+# retorna a lista de colunas do dataframe
+columns = df_vra.columns
+
+# aplica a funcao para snake_case acima coluna a coluna
+for column in columns:
+    new_column_name = kebab_to_snake(column)
+    df_vra = df_vra.withColumnRenamed(column, new_column_name)
+
+# verificacao da transformacao
+df_vra.show()
+
+```
 PRINT DO RESULTADO FINAL
+
+Como podemos ver do resultado acima as colunas ```icaoaerodromo_origem , icaoaerodromo_destino e icaoempresa_aerea``` não foram transformadas pelo Regex da função, mas como são apenas 3 colunas foi mais fácil converte-las usando o spark puro conforme código abaixo:
+
+```
+#tranformacoes adicionais
+
+df_vra = df_vra.withColumnRenamed("icaoaerodromo_destino", "icao_aerodromo_destino")
+df_vra = df_vra.withColumnRenamed("icaoaerodromo_origem", "icao_aerodromo_origem")
+df_vra = df_vra.withColumnRenamed("icaoempresa_aerea", "icao_empresa_aerea")
+
+
+
+df_vra.show(truncate=False)
+
+```
+
+Por fim, como tratamento adicional para essa task, foi feita a conversão de alguns data types das tabelas, pois arquivos csv fazem o spark assumir o schema como todas as colunas sendo do tipo ```string```. Porém, observando os resultados dos previews (```dataframe.show()```) podemos notar que alguns dados seriam ```integer``` ou do tipo ```timestamp```. Dessa forma realizamos a transformação adicional:
+
+```
+# Conversao das colunas de data pata timestamp
+# (conforme observação da saida dos dados) vista nos previews que mostra
+# a precisao de hora, minuto e segundo:
+df_vra = df_vra.withColumn("chegada_prevista", col("chegada_prevista").cast(TimestampType()))
+df_vra = df_vra.withColumn("chegada_real", col("chegada_prevista").cast(TimestampType()))
+df_vra = df_vra.withColumn("partida_prevista", col("partida_prevista").cast(TimestampType()))
+df_vra = df_vra.withColumn("partida_real", col("partida_real").cast(TimestampType()))
+
+#converte 'numero_voo' para tipo inteiro
+df_vra = df_vra.withColumn("numero_voo", col("numero_voo").cast(IntegerType()))
+
+```
+Tendo o Schema resultante abaixo para os dados de VRA:
+
+PRINT DO SCHEMA.
+
+PRINT DO RESULTADO FINAL PARA EXPORTAR
 
 ESPECIFICAR QUAL PASTA CONTEM O ARQUIVO EXPORTADO
 
