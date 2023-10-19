@@ -7,19 +7,19 @@ Este projeto foi originado de um desafio para a empresa Eleflow, a qual disponib
 ## Informação importante:
 - O ambiente de prototipagem e desenvolvimento dos códigos foi o Google Colab, por possuir uma vantagem de ser praticamente "plug and play" basta ter uma conta @gmail e começar a usar. Vale salientar que para usar o Spark nesse ambiente, é necessário fazer a instalação por meio do comando :
 
-                                                                 ``` !pip install pyspark ```
+``` !pip install pyspark ```
 
 - Outro ponto importante para destacar é a proteção da chave da api que foi feita utilizando variáveis de ambiente, para tal foi necessario utilizar a biblioteca: 
 
-                                                                ```!pip install python-decouple```
+```!pip install python-decouple```
 
 seguida dos comandos: "!touch .env" para criar o arquivo .env no Colab seguido da configuração para uso desta chave: 
 
-                                                                      ```
-                                                                      from decouple import config
+```
+from decouple import config
 
-                                                                      API_KEY = config('API_KEY')
-                                                                      ```
+API_KEY = config('API_KEY')
+```
 
 ### TO-DO:
 
@@ -51,9 +51,9 @@ seus respectivos dados, utilizando o a metodologia de "slicing";
 
 
 
-## Resolução das tasks:
+# Resolução das tasks:
 
-### Task-1
+## Task-1
 
 Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook "VRA_tratamento.ipynb" [TODOS ESSES COLOCAR O LINK], na qual, como já foi dito anteriormente, realizamos o tratamento de snake case para as colunas e exportamos o resultado para um arquivo parquet com compressão snappy.
 
@@ -64,7 +64,7 @@ PRINT DO RESULTADO FINAL
 ESPECIFICAR QUAL PASTA CONTEM O ARQUIVO EXPORTADO
 
 
-### Task-2
+## Task-2
  [DESCREVER A TASK IGUAL FOI FEITA NA TASK 1]
   Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook "AIR_CIA_tratamento.ipynb" [TODOS ESSES COLOCAR O LINK]
 
@@ -75,7 +75,7 @@ PRINT DO RESULTADO FINAL (.SHOW() DO DATAFRAME TRATADO)
 ESPECIFICAR QUAL PASTA CONTEM O ARQUIVO EXPORTADO
 
 
-### Task-3
+## Task-3
 
 Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook "dimensao_api.ipynb" [TODOS ESSES COLOCAR O LINK]
 
@@ -86,7 +86,7 @@ COM O PRINT DISSO AQUI NO RESULTADO:
 COLOCAR QUE FOI UTILIZADO O METODO HTTP.CLIENT POIS O REQUEST OCASINOU PROBLEMAS, DESCREVER COMO A API RETORNOU DE PRIMEIRA E COLOCAR O CODIGO PARA DEIXAR O DATAFRAME DO JEITO Q A GENTE PRECISAVA JUNTO DA PRINT FINAL
 
 
-### Task-4
+## Task-4
 
 Primeiramente carregamos os arquivos que foram tratados das tarefas anteriores, e criamos um data frame para cada uma delas, juntamente com a sua respectiva temp view, conforme é mostrado no código a seguir:
 
@@ -116,3 +116,11 @@ Dessa forma foi possivel iniciar as querys em spark.SQL para responder as pergun
 
 
 -4.2- seguir modelo da task 4.1
+
+
+
+
+# Extras
+
+Desenho de arquitetura medaliao com delta
+Colocar o texto aqui
