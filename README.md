@@ -445,5 +445,53 @@ E o resultado conforme a print a seguir:
 
 # Extras
 
-Desenho de arquitetura medaliao com delta
-Colocar o texto aqui
+- Descrever qual estratégia você usaria para ingerir estes dados de forma incremental caso precise capturar esses dados a cada mes?
+- Justifique em cada etapa sobre a escalabilidade da tecnologia utilizada.
+- Justifique as camadas utilizadas durante o processo de ingestão até a disponibilização dos dados.
+
+## Resposta:
+
+Para ilustrar, temos uma arquitetura medalhão, muito utilizada em delta lakes e lakehouses:
+
+![Arquitetura_Medalhao](https://github.com/matheusbudin/big-data-airlines/blob/development/assets_for_readme/arquitetura_medalhao.png)
+
+# Estratégia de Ingestão Incremental de Dados:
+
+-A estratégia de ingestão incremental de dados consiste em capturar, transformar e disponibilizar novos dados ou dados alterados em intervalos de tempo reglares (por exemplo, anualmente, mensalmente, diario). Essa abordagem é fundamental para manter as informações atualizadas sem sobrecarregar os recursos de processamento e armazenamento. A metodologia "MEDALHÃO" do Delta Lake aprimora essa estratégia, oferecendo recursos presentes nos arquivos tipo delta para gerenciamento de dados confiável e escalável, um recurso muito útil é o ```time travel``` que é possível verificar como o dado estava antes de ser transformado por uma nova carga, isso é possível graças aos logs criados pelos arquivos tipo ```delta```.
+
+## 1. Extração de Dados
+
+- **Abordagem Incremental:** A primeira etapa envolve a extração dos dados que foram criados ou modificados após a última extração. Isso pode ser feito por meio de marcações de data/hora ou outras informações de controle. A definição da estratégia de tempo a ser considerada deve ser documentada pela área de negócios e comunicada ao time de dados e desenvolvimento. A ingestão incremental reduz a carga de trabalho, tornando a escalabilidade mais eficiente. Delta Lake suporta essa abordagem e rastreia as alterações nos dados.
+
+## 2. Transformação de Dados
+
+- **Utilização de DataFrames e Spark:** Os dados extraídos são transformados usando DataFrames no Apache Spark, que é uma abordagem escalável e eficaz para processamento e transformação de dados em lote. É compatível com Apache Spark e mantém o desempenho em escala, garantindo que as transformações sejam eficientes. Além disso, podemos utilizar clusters nos cloud providers, que auxiliam ainda mais na escalabilidade horizontal do processamento.
+
+## 3. Deduplicação de Dados
+
+- **Processo de Deduplicação:** A deduplicação de dados é crucial para evitar registros duplicados. Delta Lake suporta a criação de chaves únicas e a remoção de duplicações.
+
+
+## 4. Carregamento de Dados
+
+- **Uso de Delta Lake:** Os dados transformados são carregados em tabelas Delta Lake, que são ideais para armazenamento escalável e confiável de dados. Delta Lake é altamente escalável e fornece controle de transações para operações de gravação, garantindo integridade e recuperação confiável de dados.
+
+## 5. Gerenciamento de Metadados
+
+- **Registros de Metadados:** Delta Lake mantém registros de metadados que rastreiam as operações realizadas nos dados, garantindo visibilidade total das alterações. A metodologia "MEDALHÃO" do Delta Lake oferece um registro completo de alterações, proporcionando auditoria e rastreamento escaláveis.
+
+## 6. Automação de Otimização e Compactação
+
+- **Auto-otimização:** Delta Lake inclui recursos de otimização automática, como compactação e coleta de estatísticas, para melhorar o desempenho de consultas. A Automação pode ser feita por orquestradores como ```Apache airflow``` ou pelo proprio ```data bricks workflows ; aws step functions; GCP composer```
+
+
+## 7. Informações adicionais
+- Vale salientar que a metodologia medalhão pode ser utilizada em diversos cloud providers, pois possui uma versão ```open source```
+- De forma geral: a camada ```bronze``` contem os dados tranformados da camada ```raw``` para o formato ```delta```; a camada ```silver``` adiciona tratamentos de limpeza aos dados da camada ```bronze``` e por fim, a camada ```gold``` é formada adicionando as regras de negócio.
+
+## 8. Tendência dos Data Warehouses em plataformas "ALL IN ONE" para desenvolvimento "END TO END" de projetos de Big Data e Analytics:
+**Data Warehouses Modernos:**
+
+- **Databricks:** O Databricks aceita desde a orquestração dos worflows para extração de dados, quanto a transformação utilizando spark e a carga em várias ferramentas de BI.
+
+- **BigQuery:** O BigQuery tem se mostrado cada vez mais desenvolvido, possui recursos de governança, machine learning e recentemente o desenvolvimento com jupyter notebooks. Além disso possui conector direto com o Looker Studio para criação de BI's e também suporta consultas AD HOC.
