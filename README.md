@@ -2,10 +2,10 @@
 
 ## Projeto - BigData Airlines
 
-Este projeto foi originado de um desafio para a empresa Eleflow, a qual disponibilizou as fontes de dados que estão na pasta 'src' desde projeto e foi requisitado realizar o tratamento das seguintes bases de dados: VRA (composta por arquivos CSV), AIR_CIA (composta por arquivos no formato JSON) e uma útlima base que foi chamada neste projeto de "dimensão API" que depende do resultado do tratamento da base VRA para retornar um arquivo tratado que vai ser a nossa dimensão com as características dos aerodromos. As tasks podem ser vizualidas em detalhes no readme localizado a seguir: 'readme-tasks'.
+Este projeto foi originado de um desafio para a empresa Eleflow, a qual disponibilizou as fontes de dados que estão na pasta [src](https://github.com/matheusbudin/big-data-airlines/tree/development/src) deste projeto e foi requisitado realizar o tratamento das seguintes bases de dados: VRA (composta por arquivos CSV), AIR_CIA (composta por arquivos no formato JSON) e uma útlima base que foi chamada neste projeto de "dimensão API" que depende do resultado do tratamento da base VRA para retornar um arquivo tratado que vai ser a nossa dimensão com as características dos aerodromos. As tasks podem ser vizualidas no tópico "TO-DO" ou em detalhes no readme localizado a seguir: [readme-tasks](https://github.com/matheusbudin/big-data-airlines/tree/development/src#readme).
 
-## Informação importante:
-- O ambiente de prototipagem e desenvolvimento dos códigos foi o Google Colab, por possuir uma vantagem de ser praticamente "plug and play" basta ter uma conta @gmail e começar a usar. Vale salientar que para usar o Spark nesse ambiente, é necessário fazer a instalação por meio do comando :
+## Informações importante:
+- O ambiente de prototipagem e desenvolvimento dos códigos escolhido foi o Google Colab, por possuir uma vantagem de ser praticamente "plug and play" basta ter uma conta @gmail e começar a usar. Vale salientar que para usar o Spark nesse ambiente, é necessário fazer a instalação por meio do comando :
 
 ``` !pip install pyspark ```
 
@@ -13,13 +13,14 @@ Este projeto foi originado de um desafio para a empresa Eleflow, a qual disponib
 
 ```!pip install python-decouple```
 
-seguida dos comandos: "!touch .env" para criar o arquivo .env no Colab seguido da configuração para uso desta chave: 
+- seguida dos comandos: "!touch .env" para criar o arquivo .env no Colab seguido da configuração para uso desta chave: 
 
 ```
 from decouple import config
 
 API_KEY = config('API_KEY')
 ```
+- Por fim, ao analisar os arquivos dos notebooks (.ipynb) localizados na pasta: [jupyter_notebooks](https://github.com/matheusbudin/big-data-airlines/tree/development/jupyter_notebooks_scripts) , pode-se notar que após o tratamento dos dados, é feita a exportação (salvar) utilizando o ```coalesce(1)``` para consolidar as partições em um arquivo e salvar, isso foi necessário pois ao particionar por 'ano' o ambiente do ```Google Colab``` ficou extremamente lento. Entretanto, é importante enfatizar que em um cenário de ```big data``` o particionamento é extremamente necessário e as regras devem ser de acordo com a definição da ```área de negócios```.
 
 ### TO-DO:
 
