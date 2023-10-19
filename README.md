@@ -24,12 +24,11 @@ API_KEY = config('API_KEY')
 
 ### TO-DO:
 
--1. Realizar o tratamento de dados da base VRA, que possui arquivos CSV como origem, trata as colunas para padrão "snake_case" de nomenclatura, em adição foi feito o tratamento dos caracteres especiais para as colunas e substituição dos valores "NULL" para string vazia;
+-1. Realizar o tratamento de dados da base VRA, que possui arquivos CSV como origem, tratar as colunas para padrão "snake_case" de nomenclatura que na origem estão no formato "KebabCase", em adição foi feito o tratamento dos caracteres especiais para as colunas e substituição dos valores "NULL" para string vazia;
 
--2. Realizar o tratamento de dados da base AIR_CIA, que possui arquivos origem em formato JSON, similarmente foi requisitado para trocar a nomenclatura das colunas que estava no padrão "kebabCase" passando para "snake_case", também foi feito o tratamento dos caracteres especiais, e em adição a coluna "ICAO IATA" foi separada em duas "icao" e "iata" com 
-seus respectivos dados, utilizando o a metodologia de "slicing";
+-2. Realizar o tratamento de dados da base AIR_CIA, que possui arquivos origem em formato JSON, similarmente foi requisitado para converter a nomenclatura das colunas para "snake_case", também foi feito o tratamento dos caracteres especiais, e em adição a coluna "ICAO IATA" foi separada em duas "icao" e "iata" com seus respectivos dados, utilizando o a metodologia de "slicing";
 
--3. Realizar a extração de dados da API [LINK DA API] que possui as informações dos aerodromos, e salvar o resultado dessa extração de dados da API.
+-3. Realizar a extração de dados da API [https://rapidapi.com/Active-api/api/airport-info/] que possui as informações dos aerodromos, e salvar o resultado dessa extração de dados da API.
 
 -4. Criação das Views (tabelas) priorizando o uso do SQL, que no caso foi utilziado dentro do próprio spark por já possuir essa feature built-in e também por utilziar o ambiente do Google Colab, os arquivos finais, pós criação das Views, foram exportados em formato '.parquet' e '.json' e estão localizados na pasta: "resultados_query_exportados".
 
@@ -56,7 +55,7 @@ seus respectivos dados, utilizando o a metodologia de "slicing";
 
 ## Task-1
 
-Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook [VRA_tratamento.ipynb](hhttps://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/VRA_tratamento.ipynb) , na qual, como já foi dito anteriormente, realizamos o tratamento de snake case para as colunas, retiramos os caracteres especiais pois podem ocasionar problemas quando essas tabelas forem usadas em um ```JOIN``` da ```task-4``` e exportamos o resultado para um arquivo parquet com compressão snappy.
+Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook [VRA_tratamento.ipynb](https://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/VRA_tratamento.ipynb) , na qual, como já foi dito anteriormente, realizamos o tratamento de snake case para as colunas, retiramos os caracteres especiais pois podem ocasionar problemas quando essas tabelas forem usadas em um ```JOIN``` da ```task-4``` e exportamos o resultado para um arquivo parquet com compressão snappy.
 
 A seguir temos o trecho do código retirado do notebook "VRA_tratamento.ipynb" o qual é responsável por realizar o tratamento de snake_case requierido na task, lembrando que inicialmente no arquivo ```de origem``` as colunas estavam no padrão ```KebabCase``` então definimos uma função para realizar tal conversão:
 
@@ -120,26 +119,106 @@ ESPECIFICAR QUAL PASTA CONTEM O ARQUIVO EXPORTADO
 
 
 ## Task-2
- [DESCREVER A TASK IGUAL FOI FEITA NA TASK 1]
-  Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook "AIR_CIA_tratamento.ipynb" [TODOS ESSES COLOCAR O LINK]
 
-COLOCAR TRECHO DO CODIGO COM TRATAMENTO SNAKE_CASE E OUTRO COM CODIGO DO SLICING + NOENCLATURA ESPECIFICA DE ALGUMAS COLUNAS
+Para a realização da task-2 é possivel ver o desenvolvimento passo a passo no notebook [AIR_CIA_tratamento.ipynb](https://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/AIR_CIA_tratamento.ipynb). Onde foi realizada a converção da nomenclatura das colunas para snake_case e a operação de slicing para a coluna ```ICAO IATA``` que originou duas colunas separadas ```icao e iata ```. A seguir temos os códigos que realizam, respectivamente, as transformações:
+
+-Conversão para snake_case:
+```
+
+# conversao para snake case
+for column in df_air_cia.columns:
+    new_column_name = column.lower().replace(" ", "_").replace("-", "_")
+    df_air_cia = df_air_cia.withColumnRenamed(column, new_column_name)
+
+```
+
+- Separação das colunas ```icao e iata```:
+
+```
+# Operacao de slice da coluna 'icao_iata' para 'icao' e 'iata'
+df_air_cia = df_air_cia.withColumn("icao_iata", split("icao_iata", " "))
+df_air_cia = df_air_cia.withColumn("icao", df_air_cia["icao_iata"].getItem(0))
+df_air_cia = df_air_cia.withColumn("iata", when(df_air_cia["icao_iata"].getItem(1).isNotNull(), df_air_cia["icao_iata"].getItem(1)))
+
+# trazendo as colunas 'icao' e 'iata' obedecendo a ordem do dataframe original
+df_air_cia = df_air_cia.select("razao_social", "icao", "iata", "cnpj", "atividades_aereas", "endereco_sede", "telefone", "e_mail", "decisao_operacional", "data_decisao_operacional", "validade_operacional")
+# substitui os valores nulos por uma string vazia
+df_air_cia = df_air_cia.na.fill(' ')
+# preview final do data frame antes de exporta-lo
+df_air_cia.show(truncate=False)
+```
 
 PRINT DO RESULTADO FINAL (.SHOW() DO DATAFRAME TRATADO)
 
-ESPECIFICAR QUAL PASTA CONTEM O ARQUIVO EXPORTADO
+Após os tratamentos, o arquivo referente aos dados da base AIR_CIA está localizado na pasta: [AIR_CIA_tratamento.ipynb](https://github.com/matheusbudin/big-data-airlines/tree/development/converted_data/AIR_CIA)
 
 
 ## Task-3
 
-Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook "dimensao_api.ipynb" [TODOS ESSES COLOCAR O LINK]
+Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook  [dimensao_api.ipynb](https://github.com/matheusbudin/big-data-airlines/tree/development/converted_data/AIR_CIA). Primeiramente foi necessário criar um registro com todos os códigos ```icao``` distintos, presentes tanto para ```icao_aerodromo_origem``` quanto para ```icao_aerodromo_destino```, conforme podemos ver a seguir:
 
-COLOCAR O TRATAMENTO DO CODIGO QUE ORIGINOU A LISTA DOS CODIGOS UNICOS E DISTINTOS PARA CONSULTAR A API
+```
+# cria um dataframe com todos os codigos 'icao' encontrados em cada uma das
+# colunas 'icao_aerodromo_origem' e 'icao_aerodromo_destino'
+unique_codes = (
+    df_vra.select("icao_aerodromo_origem")
+    .union(df_vra.select("icao_aerodromo_destino"))
+    .distinct()
+)
 
-COM O PRINT DISSO AQUI NO RESULTADO:
+```
 
-COLOCAR QUE FOI UTILIZADO O METODO HTTP.CLIENT POIS O REQUEST OCASINOU PROBLEMAS, DESCREVER COMO A API RETORNOU DE PRIMEIRA E COLOCAR O CODIGO PARA DEIXAR O DATAFRAME DO JEITO Q A GENTE PRECISAVA JUNTO DA PRINT FINAL
+Em seguida, levamos esses dados de códigos ```icao``` para trazer o retorno referente à cada um para formarmos uma ```tabela_dimensao``` dessa API que vai ser usada na task4. A seguir temos os códigos de extração de dados da APi seguido do tratamento do dataframe para trazer o resultado como precisamos (conforme pode ser visto na print a seguir também)
 
+```
+
+# popula o dataframe com as respostas retornadas da API
+for row in unique_codes.collect():
+    icao_code = row["icao"]
+    api_response = fetch_data(icao_code)
+    # foi necessario forcar um numero de colunas para evitar o erro 'mismatch number of columns'
+    if api_response:
+        api_dataframe = api_dataframe.union(spark.createDataFrame([[None, None, icao_code, None, None, None, None, None, None, None, None, None, None, None, None, None, None, api_response]], schema=schema))
+
+# adiciona uma coluna no final para mostrar a correspondencia que deu match e que tem origem no df_vra
+api_dataframe = api_dataframe.withColumn("icao_code_source", lit("icao_code"))
+
+##formatando o dataframe para o modelo que precisamos:
+
+# Extracao dos dados presente no JSON em cada linha da coluna 'website'
+expanded_data = api_dataframe.withColumn("website_data", from_json(col("website"), json_schema))
+
+# filtramos o data frame para retornar somente as colunas nao nulas
+expanded_data = expanded_data.filter(col("website_data.id").isNotNull())
+
+# forçamos a selecao das colunas para garatir o schema necessário
+expanded_data = expanded_data.select(
+    "website_data.id",
+    "website_data.iata",
+    "website_data.icao",
+    "website_data.name",
+    "website_data.location",
+    "website_data.street_number",
+    "website_data.street",
+    "website_data.city",
+    "website_data.county",
+    "website_data.state",
+    "website_data.country_iso",
+    "website_data.country",
+    "website_data.postal_code",
+    "website_data.phone",
+    "website_data.latitude",
+    "website_data.longitude",
+    "website_data.uct",
+    "website_data.website",
+    "icao_code_source"
+)
+
+# finalmente temos o dataframe que desejávamos desde o inicio.
+expanded_data.show(truncate=False)
+
+```
+[PRINT DO RESULTADO]
 
 ## Task-4
 
