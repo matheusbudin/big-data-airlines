@@ -120,7 +120,7 @@ ESPECIFICAR QUAL PASTA CONTEM O ARQUIVO EXPORTADO
 
 ## Task-2
 
-Para a realização da task-2 é possivel ver o desenvolvimento passo a passo no notebook [AIR_CIA_tratamento.ipynb](https://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/AIR_CIA_tratamento.ipynb). Onde foi realizada a converção da nomenclatura das colunas para snake_case e a operação de slicing para a coluna ```ICAO IATA``` que originou duas colunas separadas ```icao e iata ```. A seguir temos os códigos que realizam, respectivamente, as transformações:
+Para a realização da task-2 é possivel ver o desenvolvimento passo a passo no notebook [AIR_CIA_tratamento.ipynb](https://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/AIR_CIA_tratamento.ipynb). Onde foi realizada a conversão da nomenclatura das colunas para snake_case e a operação de slicing para a coluna ```ICAO IATA``` que originou duas colunas separadas ```icao e iata ```. A seguir temos os códigos que realizam, respectivamente, as transformações:
 
 -Conversão para snake_case:
 ```
@@ -214,17 +214,28 @@ expanded_data = expanded_data.select(
     "icao_code_source"
 )
 
-# finalmente temos o dataframe que desejávamos desde o inicio.
+# finalmente temos o dataframe no formato desejado
 expanded_data.show(truncate=False)
 
 ```
 [PRINT DO RESULTADO]
 
 ## Task-4
+Para vizualizar o arquivo jupyter notebook que contempla a criação das views de maneira completa, favor acessar no link a seguir: [create_views.ipynb](https://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/create_views_sql.ipynb)
 
-Primeiramente carregamos os arquivos que foram tratados das tarefas anteriores, e criamos um data frame para cada uma delas, juntamente com a sua respectiva temp view, conforme é mostrado no código a seguir:
+Primeiramente carregamos os arquivos que foram tratados das tarefas anteriores, e criamos um data frame para cada uma delas, juntamente com a sua criação da sua respectiva temp view que será usada nas operações ```JOIN```, conforme é mostrado no código a seguir:
 
-''' codigo de carregar os DFs, e criacao das temp views '''
+``` 
+# Leitura dos parquets que sao resultados das tasks anteriores
+df_vra = spark.read.parquet("/content/VRA")
+df_air_cia = spark.read.parquet("/content/AIR_CIA")
+df_api = spark.read.parquet("/content/API")
+
+#criacao das tempviews
+df_vra.createOrReplaceTempView("vra")
+df_air_cia.createOrReplaceTempView("air_cia")
+df_api.createOrReplaceTempView("api")
+```
 
 Dessa forma foi possivel iniciar as querys em spark.SQL para responder as perguntas das áreas de negócios.
 
