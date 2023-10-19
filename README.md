@@ -443,7 +443,7 @@ df_resultado.show(truncate=False)
 ```
 E o resultado conforme a print a seguir:
   
-![View_maior_area_por_cia](https://github.com/matheusbudin/big-data-airlines/blob/development/assets_for_readme/View2.png)
+![View_maior_area_por_cia](https://github.com/matheusbudin/big-data-airlines/blob/development/assets_for_readme/VIew2.png)
 
 
 
