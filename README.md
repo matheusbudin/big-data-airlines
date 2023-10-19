@@ -332,7 +332,7 @@ Agora temos o resultado desejado, como podemos ver na print abaixo:
 
 [PRINT]
 
-# task-4.2: seguir modelo da task 4.1
+# task-4.2:
 - Para responder a pergunta de negócio contida nesta task, vamos reutilizar os dataframes e tempviews já carregados na tarefa anterior, essa é a razão de usarmos o mesmo jupyter notebook para a criação das duas ```Views```. Logo, para criar uma View que sintetize ```a área de maior atuação no ano por companhia aérea``` temos a seguinte query:
 
 
@@ -454,6 +454,8 @@ E o resultado conforme a print a seguir:
 Para ilustrar, temos uma arquitetura medalhão, muito utilizada em delta lakes e lakehouses:
 
 ![Arquitetura_Medalhao](https://github.com/matheusbudin/big-data-airlines/blob/development/assets_for_readme/arquitetura_medalhao.png)
+
+A arquitetura medalhão será explicada a seguir com suas vantagens, porém vale destacar nessa arquitetura as ```Azure Functions``` que podem ser utilziadas como ```triggers``` para a técnica de CDC, ou seja, no momento que um arquivo chega na camada ```raw``` (blob storage, s3 bucket, gcp bucket) a função pode inicializar um processo de ```ETL``` de maneira automática. Além do ```Azure Functions``` podemos utilizar as funções das outras clouds como ```Aws lambda ou Google Functions```
 
 # Estratégia de Ingestão Incremental de Dados:
 
