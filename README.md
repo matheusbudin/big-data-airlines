@@ -61,13 +61,13 @@ API_KEY = config('API_KEY')
 
 ## **Task-1**
 
-Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook [VRA_tratamento.ipynb](https://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/VRA_tratamento.ipynb) , na qual, como já foi dito anteriormente, realizamos o tratamento de snake case para as colunas, retiramos os caracteres especiais pois podem ocasionar problemas quando essas tabelas forem usadas em um ```JOIN``` da ```task-4``` e exportamos o resultado para um arquivo parquet com compressão snappy.
+Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook [VRA_tratamento.ipynb](https://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/VRA_tratamento.ipynb) , na qual, como já foi dito anteriormente, realizei o tratamento de snake case para as colunas, retirei os caracteres especiais pois podem ocasionar problemas quando essas tabelas forem usadas em um ```JOIN``` da ```task-4``` e exportei o resultado para um arquivo parquet com compressão snappy.
 
-A seguir temos o trecho do código retirado do notebook "VRA_tratamento.ipynb" o qual é responsável por realizar o tratamento de snake_case requierido na task, lembrando que inicialmente no arquivo ```de origem``` as colunas estavam no padrão ```KebabCase``` então definimos uma função para realizar tal conversão:
+A seguir temos o trecho do código retirado do notebook "VRA_tratamento.ipynb" o qual é responsável por realizar o tratamento de snake_case requierido na task, lembrando que inicialmente no arquivo ```de origem``` as colunas estavam no padrão ```KebabCase``` então defini uma função para realizar tal conversão:
 
 
 ```
-# converter para snake case, usamos o regex abaixo:
+# converter para snake case, foi usado o regex abaixo:
 def kebab_to_snake(column_name):
     return re.sub(r'(?<=[a-z])(?=[A-Z0-9])|(?<=[0-9])(?=[A-Z])', '_', column_name).lower()
 
@@ -100,7 +100,7 @@ df_vra.show(truncate=False)
 
 ```
 
-Por fim, como tratamento adicional para essa task, foi feita a conversão de alguns data types das tabelas, pois arquivos csv fazem o spark assumir o schema como todas as colunas sendo do tipo ```string```. Porém, observando os resultados dos previews (```dataframe.show()```) podemos notar que alguns dados seriam ```integer``` ou do tipo ```timestamp```. Dessa forma realizamos a transformação adicional:
+Por fim, como tratamento adicional para essa task, foi feita a conversão de alguns data types das tabelas, pois arquivos csv fazem o spark assumir o schema como todas as colunas sendo do tipo ```string```. Porém, observando os resultados dos previews (```dataframe.show()```) podemos notar que alguns dados seriam ```integer``` ou do tipo ```timestamp```. Dessa forma realizei a transformação adicional:
 
 ```
 # Conversao das colunas de data pata timestamp
@@ -228,7 +228,7 @@ expanded_data.show(truncate=False)
 ## **Task-4.1**
 Para vizualizar o arquivo jupyter notebook que contempla a criação das views de maneira completa, favor acessar no link a seguir: [create_views.ipynb](https://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/create_views_sql.ipynb)
 
-Primeiramente carregamos os arquivos que foram tratados das tarefas anteriores, e criamos um data frame para cada uma delas, juntamente com a sua criação da sua respectiva temp view que será usada nas operações ```JOIN```, conforme é mostrado no código a seguir:
+Primeiramente carreguei os arquivos que foram tratados das tarefas anteriores, e criei um data frame para cada uma delas, juntamente com a sua criação da sua respectiva temp view que será usada nas operações ```JOIN```, conforme é mostrado no código a seguir:
 
 ``` 
 # Leitura dos parquets que sao resultados das tasks anteriores
@@ -291,7 +291,7 @@ df_rota_mais_utilizada.createOrReplaceTempView("rota_mais_utilizada")
 -O resultado dessa query pode ser mostrado a seguir:
 ![View_Rota_Mais_Utilizada](https://github.com/matheusbudin/big-data-airlines/blob/development/assets_for_readme/View1_part1.png)
 
-Como podemos ver, ainda restam ajustes, queremos que seja impresso apenas um registro por companhia, dessa forma, utilizamos a TempView da query anterior e reorganizamos a consulta:
+Como podemos ver, ainda restam ajustes, queremos que seja impresso apenas um registro por companhia, dessa forma, utilizei a TempView da query anterior e reorganizei a consulta:
 
 ```
 
