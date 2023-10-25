@@ -160,7 +160,7 @@ Após os tratamentos, o arquivo referente aos dados da base AIR_CIA está locali
 
 ## **Task-3**
 
-Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook  [dimensao_api.ipynb](https://github.com/matheusbudin/big-data-airlines/tree/development/converted_data/AIR_CIA). Primeiramente foi necessário criar um registro com todos os códigos ```icao``` distintos, presentes tanto para ```icao_aerodromo_origem``` quanto para ```icao_aerodromo_destino```, conforme podemos ver a seguir:
+Para a realização desta task é possivel ver o desenvolvimento passo a passo no notebook  [dimensao_api.ipynb](https://github.com/matheusbudin/big-data-airlines/blob/development/jupyter_notebooks_scripts/dimensao_api.ipynb). Primeiramente foi necessário criar um registro com todos os códigos ```icao``` distintos, presentes tanto para ```icao_aerodromo_origem``` quanto para ```icao_aerodromo_destino```, conforme podemos ver a seguir:
 
 ```
 # cria um dataframe com todos os codigos 'icao' encontrados em cada uma das
